@@ -10,14 +10,18 @@ app.use(morgan('tiny'));
 
 app.use('/', express.static('client'));
 
-app.post('/report', upload.single('jsonData'), (req, res, next) => {
+const clearUploadsFolder = (req, res, next) => {
     utils.deleteAllFiles('./uploads')
-        .readFile(req.file.path)
-        .then(data => JSON.parse(data.toString()))
-        .then(jsonData => utils.createFile(jsonData))
-        .then(fileName => res.download(`./${fileName}`))
+        .then(() => next())
         .catch(err => next(err));
+};
 
+app.post('/report', [clearUploadsFolder, upload.single('jsonData')], (req, res, next) => {
+    utils.readFile(req.file.path)
+        .then(data => JSON.parse(data.toString()))
+        .then(jsonData => utils.createFile(jsonData, './reports'))
+        .then(fileName => res.download(`./reports/${fileName}`))
+        .catch(err => next(err));
 });
 
 const port = 3000;

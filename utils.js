@@ -45,13 +45,13 @@ var turnRowIntoString = (row) => {
         .join(',');
 }
 
-const createFile = (json) => {
+const createFile = (json, dirPath) => {
     const outPutString = parseJsonIntoArray(json)
         .map(turnRowIntoString)
         .join('\n');
 
     return new Promise((resolve, reject) => {
-        fs.writeFile('file.csv', outPutString, (err) =>{
+        fs.writeFile(path.join(dirPath, 'file.csv'), outPutString, (err) =>{
             if (err) { reject(err); }
             resolve('file.csv');
         })
