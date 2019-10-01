@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const parseJsonIntoArray = (json) => {
     let headers = {};
     let rows = [];
@@ -41,3 +43,18 @@ var turnRowIntoString = (row) => {
         .map(val => val.indexOf(',') >= 0 ? `"${val}"` : val)
         .join(',');
 }
+
+const createFile = (json) => {
+    const outPutString = parseJsonIntoArray(json)
+        .map(turnRowIntoString)
+        .join('\n');
+
+    return new Promise((resolve, reject) => {
+        fs.writeFile('file.csv', outPutString, (err) =>{
+            if (err) { reject(err); }
+            resolve('file.csv');
+        })
+    })
+};
+
+module.exports = createFile;
