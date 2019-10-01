@@ -9,8 +9,8 @@
 <body>
     <h1>JSON to CSV</h1>
     <p>Copy your JSON data in the form below to receive a CSV version.</p>
-    <form>
-        <textarea rows=10 cols=75></textarea>
+    <form action="/report" method="post">
+        <textarea name="json_data" rows=10 cols=75></textarea>
         </br>
         <input type="submit" value="Submit"/>
     </form>
