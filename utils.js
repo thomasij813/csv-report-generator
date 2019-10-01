@@ -32,6 +32,12 @@ const parseJsonIntoArray = (json) => {
         return row;
     }, [])
     rows.unshift(firstRow);
-    
+
     return rows;
+}
+
+var turnRowIntoString = (row) => {
+    return row.map(val => typeof val !== 'string' ? JSON.stringify(val) : val)
+        .map(val => val.indexOf(',') >= 0 ? `"${val}"` : val)
+        .join(',');
 }
