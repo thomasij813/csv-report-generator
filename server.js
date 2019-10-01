@@ -11,7 +11,8 @@ app.use(morgan('tiny'));
 app.use('/', express.static('client'));
 
 app.post('/report', upload.single('jsonData'), (req, res, next) => {
-    utils.readFile(req.file.path)
+    utils.deleteAllFiles('./uploads')
+        .readFile(req.file.path)
         .then(data => JSON.parse(data.toString()))
         .then(jsonData => utils.createFile(jsonData))
         .then(fileName => res.download(`./${fileName}`))

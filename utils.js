@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 const parseJsonIntoArray = (json) => {
     let headers = {};
@@ -66,4 +67,24 @@ const readFile = (filePath) => {
     }) 
 }
 
-module.exports = { createFile, readFile };
+const deleteAllFiles = (dirPath) => {
+    return new Promise((resolve, reject) => {
+        fs.readdir(dirPath, (err, files) => {
+            if (err) { reject(err); }
+            Promise.all(
+                files.map(file => deleteFile(path.join(dirPath, file)))
+            ).then(resolve);
+        });
+    });
+};
+
+const deleteFile = (filePath) => {
+    return new Promise((resolve, reject) => {
+        fs.unlink(filePath, (err) => {
+            if (err) { reject(err); }
+            resolve();
+        })
+    })
+}
+
+module.exports = { createFile, readFile, deleteAllFiles };
