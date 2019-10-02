@@ -4,11 +4,13 @@ const path = require('path');
 const parseJsonIntoArray = (json) => {
     let headers = {};
     let rows = [];
-    let i = 1;
+    let i = 2;
     let rowStart = 1;
 
-    const recurse = (root) => {
+    const recurse = (root, parentId = null) => {
         const localHeaders = Object.keys(root);
+
+        let id = rowStart
 
         let row = localHeaders
             .filter(header => header !== 'children')
@@ -20,14 +22,16 @@ const parseJsonIntoArray = (json) => {
                 let headerIndex = headers[header];
                 row[headerIndex] = root[header];
                 return row;
-            }, [rowStart]);
-        
-        rowStart++;
+            }, [id, parentId]);
 
         rows.push(row);
 
+        rowStart++;
+
         if (root.children.length > 0) {
-            root.children.forEach(recurse);
+            root.children.forEach((child) => {
+                recurse(child, id)
+            });
         }
     };
     
@@ -36,7 +40,7 @@ const parseJsonIntoArray = (json) => {
     const firstRow = Object.keys(headers).reduce((row, header) => {
         row.push(header)
         return row;
-    }, ['id'])
+    }, ['id', 'parentId']);
     rows.unshift(firstRow);
 
     return rows;
