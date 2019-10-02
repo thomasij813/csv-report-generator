@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const utils = require('./utils');
 const multer = require('multer');
+const fs = require('fs');
 
 const app = express();
 const upload = multer({dest: 'uploads/'});
@@ -22,6 +23,13 @@ app.post('/report', [clearUploadsFolder, upload.single('jsonData')], (req, res, 
         .then(jsonData => utils.createFile(jsonData, './reports'))
         .then(fileName => res.download(`./reports/${fileName}`))
         .catch(err => next(err));
+});
+
+app.get('/report', (req, res, next) => {
+    fs.readFile('./reports/file.csv', (err, file) => {
+        if (err) { next(err); }
+        res.download('./reports/file.csv');
+    });
 });
 
 const port = 3000;
